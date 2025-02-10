@@ -1,16 +1,19 @@
 import type { Dispatch, SetStateAction } from 'react'
-import { type ReactElement } from 'react'
+import { useContext, type ReactElement } from 'react'
 import { useRouter } from 'next/navigation'
-import { IconButton, Paper, SvgIcon } from '@mui/material'
+import { Chip, IconButton, Paper, SvgIcon, Typography } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import classnames from 'classnames'
 import css from './styles.module.css'
 import Link from 'next/link'
 import WalletConnect from '@/features/walletconnect/components'
 import SuperChainEco from '@/public/images/common/superchain-eco.svg'
+import SunnyIcon from '@/public/images/common/sunny.svg'
 import Image from 'next/image'
 import ConnectWallet from '../ConnectWallet'
 import NotificationCenter from '@/components/notification-center/NotificationCenter'
+import { TxModalContext } from '@/components/tx-flow'
+import ActivateSavingSunny from '@/components/savings-sunny/ActivateSavingSunny'
 
 type HeaderProps = {
   onMenuToggle?: Dispatch<SetStateAction<boolean>>
@@ -18,6 +21,7 @@ type HeaderProps = {
 }
 
 const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
+  const { setTxFlow } = useContext(TxModalContext)
   const router = useRouter()
   const logoHref = '/#'
 
@@ -27,6 +31,10 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
     } else {
       router.push(logoHref)
     }
+  }
+
+  const handleOnClickAgent = () => {
+    setTxFlow(<ActivateSavingSunny />)
   }
 
   return (
@@ -41,6 +49,14 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
         <Link href={logoHref} passHref>
           <SvgIcon component={SuperChainEco} inheritViewBox style={{ width: '200px', height: '100px' }} />
         </Link>
+      </div>
+
+      <div className={classnames(css.element, css.networkSelector)}>
+        <div onClick={handleOnClickAgent} className={classnames(css.element, css.inline)}>
+          <SvgIcon component={SunnyIcon} inheritViewBox />
+          <Typography fontWeight={600}>Agent:</Typography>
+          <Chip label="Off" variant="outlined" size="small" />
+        </div>
       </div>
 
       <div className={classnames(css.element)}>
