@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from 'react'
-import { useContext, type ReactElement } from 'react'
+import { useContext, type ReactElement, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Chip, IconButton, Paper, SvgIcon, Typography } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
@@ -14,6 +14,7 @@ import ConnectWallet from '../ConnectWallet'
 import NotificationCenter from '@/components/notification-center/NotificationCenter'
 import { TxModalContext } from '@/components/tx-flow'
 import ActivateSavingSunny from '@/components/savings-sunny/ActivateSavingSunny'
+import SavingsSunny from '@/components/savings-sunny/SavingsSunny'
 
 type HeaderProps = {
   onMenuToggle?: Dispatch<SetStateAction<boolean>>
@@ -25,6 +26,8 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
   const router = useRouter()
   const logoHref = '/#'
 
+  const [isAgentActive, setIsAgentActive] = useState(true)
+
   const handleMenuToggle = () => {
     if (onMenuToggle) {
       onMenuToggle((isOpen) => !isOpen)
@@ -34,7 +37,7 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
   }
 
   const handleOnClickAgent = () => {
-    setTxFlow(<ActivateSavingSunny />)
+    setTxFlow(isAgentActive ? <SavingsSunny /> : <ActivateSavingSunny />)
   }
 
   return (
@@ -55,7 +58,12 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
         <div onClick={handleOnClickAgent} className={classnames(css.element, css.inline)}>
           <SvgIcon component={SunnyIcon} inheritViewBox />
           <Typography fontWeight={600}>Agent:</Typography>
-          <Chip label="Off" variant="outlined" size="small" />
+          <Chip
+            label={isAgentActive ? 'On' : 'Off'}
+            variant="outlined"
+            color={isAgentActive ? 'success' : 'default'}
+            size="small"
+          />
         </div>
       </div>
 

@@ -1,45 +1,101 @@
-import { Container, Grid, Paper, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  Paper,
+  Tab,
+  Tabs,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from '@mui/material'
 import css from './styles.module.css'
-import React from 'react'
+import React, { useState } from 'react'
 import { TxLayoutHeader } from '@/components/tx-flow/common/TxLayout'
 import TxCard from '@/components/tx-flow/common/TxCard'
+import Stats from './Stats'
+import Actions from './Actions'
+import RecentActions from './RecentActions'
 
-export default function ActivateSavingSunny
-  () {
+export default function SavingsSunny() {
+  const [activeTab, setActiveTab] = useState(0)
+  const [toggle, setToggle] = useState('on')
+  const handleToggle = (event: React.MouseEvent<HTMLElement>, newToggle: string) => {
+    if (newToggle !== null) {
+      setToggle(newToggle)
+    }
+  }
+
   return (
     <Container className={css.container}>
-      <Grid container gap={3} justifyContent="center">
-        {/* Main content */}
-        <Grid item xs={12} md={7}>
-          <div className={css.titleWrapper}>
+      <Grid container gap={1} justifyContent="center">
+        <Grid item xs={12} md={10}>
+          <Box display="flex" gap={2} className={css.titleWrapper}>
             <Typography data-testid="modal-title" variant="h3" component="div" fontWeight="700" className={css.title}>
-              Activate Sunny Agent
+              Sunny Agent
             </Typography>
-          </div>
+            <Box color="#0000001f" display="flex" gap={1}>
+              <Button
+                onClick={() => setToggle('on')}
+                size="small"
+                variant="outlined"
+                color={toggle === 'on' ? 'success' : 'inherit'}
+              >
+                ON
+              </Button>
+              <Button
+                onClick={() => setToggle('off')}
+                size="small"
+                variant="outlined"
+                color={toggle === 'off' ? 'error' : 'inherit'}
+              >
+                OFF
+              </Button>
+            </Box>
+          </Box>
 
           <Paper data-testid="modal-header" className={css.header}>
-            <TxLayoutHeader icon={undefined} subtitle="" hideNonce={true} />
+            <TxLayoutHeader
+              icon={undefined}
+              subtitle={
+                <Tabs value={activeTab} onChange={(_, newValue) => setActiveTab(newValue)}>
+                  <Tab label="Stats" />
+                  <Tab label="Actions" />
+                  {/* <Tab label="Settings" /> */}
+                </Tabs>
+              }
+              hideNonce={true}
+            />
           </Paper>
           <div className={css.step}>
             <TxCard>
-              <Grid container justifyContent="center" alignItems="center" spacing={2} columns={20} direction="row">
-                <Grid xs={8} item>
-                </Grid>
+              <Grid container justifyContent="center" alignItems="center" spacing={2} direction="row">
+                {activeTab === 0 && <Stats />}
+                {activeTab === 1 && <Actions />}
               </Grid>
-
-
-              {/* <CardActions style={{ margin: 0 }}> */}
-              {/*   <Button onClick={handleSubmit} disabled={!isChanged} variant="contained" color="secondary"> */}
-              {/*     <Typography color="white">Save</Typography> */}
-              {/*     <SvgIcon sx={{ marginLeft: 1 }} inheritViewBox component={Save} /> */}
-              {/*   </Button> */}
-              {/* </CardActions> */}
             </TxCard>
           </div>
         </Grid>
-
+        <Grid item xs={12} md={10}>
+          <Paper data-testid="modal-header" className={css.header}>
+            <TxLayoutHeader
+              icon={undefined}
+              subtitle={
+                <Typography variant="h3" fontWeight="600">
+                  Recent Actions
+                </Typography>
+              }
+              hideNonce={true}
+            />
+          </Paper>
+          <div className={css.step}>
+            <TxCard>
+              <RecentActions />
+            </TxCard>
+          </div>
+        </Grid>
       </Grid>
     </Container>
   )
 }
-

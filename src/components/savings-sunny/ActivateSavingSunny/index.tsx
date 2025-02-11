@@ -12,31 +12,39 @@ import {
   Button,
   CardContent,
   Card,
+  ToggleButton,
+  ToggleButtonGroup,
 } from '@mui/material'
 import { ArrowRight, FiberManualRecord } from '@mui/icons-material'
 import React, { useState } from 'react'
 import css from './styles.module.css'
 import { TxLayoutHeader } from '@/components/tx-flow/common/TxLayout'
 import TxCard from '@/components/tx-flow/common/TxCard'
-
 export default function ActivateSavingSunny() {
   const [isLoading, setIsLoading] = useState(false)
+  const [toggle, setToggle] = useState('on')
+
   const handleGrantPermission = async () => {
     if (isLoading) return
     setIsLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 10000))
     console.log('grant permission')
     setIsLoading(false)
   }
+
+  const handleToggle = (event: React.MouseEvent<HTMLElement>, newToggle: string) => {
+    if (newToggle !== null) {
+      setToggle(newToggle)
+    }
+  }
+
   return (
     <Container className={css.container}>
       <Grid container gap={3} justifyContent="center">
-        {/* Contenido principal */}
         <Grid item xs={10} md={10}>
-          {/* Título principal */}
           <div className={css.titleWrapper}>
             <Typography data-testid="modal-title" variant="h3" component="div" fontWeight="700" className={css.title}>
-              Activate Sunny Agent
+              Sunny Agent
             </Typography>
           </div>
 
