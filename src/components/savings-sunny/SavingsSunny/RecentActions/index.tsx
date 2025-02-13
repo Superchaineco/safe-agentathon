@@ -40,7 +40,7 @@ export default function RecentActions() {
   return (
     <Grid item container xs={12} spacing={2}>
       {mocks.map((mock, index) => (
-        <Grid item xs={12} md={3}>
+        <Grid key={index} item xs={12} md={3}>
           <Paper style={{ padding: '4px', borderWidth: '1px' }} variant="outlined">
             <Card>
               <CardContent style={{ padding: '12px' }}>

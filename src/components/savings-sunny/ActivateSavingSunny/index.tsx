@@ -12,32 +12,29 @@ import {
   Button,
   CardContent,
   Card,
-  ToggleButton,
-  ToggleButtonGroup,
 } from '@mui/material'
-import { ArrowRight, FiberManualRecord } from '@mui/icons-material'
-import React, { useState } from 'react'
+import { FiberManualRecord } from '@mui/icons-material'
+import React, { useState, useContext } from 'react'
 import css from './styles.module.css'
 import { TxLayoutHeader } from '@/components/tx-flow/common/TxLayout'
 import TxCard from '@/components/tx-flow/common/TxCard'
 import useSuperChainAccount from '@/hooks/super-chain/useSuperChainAccount'
-import { createEthersAdapter, useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
-import { dispatchTxExecution } from '@/services/tx/tx-sender'
-import { useTxActions } from '@/components/tx/SignOrExecuteForm/hooks'
-import { assertWalletChain, getUncheckedSafeSDK } from '@/services/tx/tx-sender/sdk'
+import { createEthersAdapter } from '@/hooks/coreSDK/safeCoreSDK'
+import { assertWalletChain } from '@/services/tx/tx-sender/sdk'
 import useWallet from '@/hooks/wallets/useWallet'
 import useSafeInfo from '@/hooks/useSafeInfo'
 import Safe from '@safe-global/protocol-kit'
 import { createWeb3 } from '@/hooks/wallets/web3'
 import { useQueryClient } from '@tanstack/react-query'
-
+import { TxModalContext } from '@/components/tx-flow'
+import SavingsSunny from '../SavingsSunny'
 export default function ActivateSavingSunny() {
   const [isLoading, setIsLoading] = useState(false)
   const { getWritableSafeContract, publicClient } = useSuperChainAccount()
   const queryClient = useQueryClient()
   const wallet = useWallet()
   const { safe, safeAddress } = useSafeInfo()
-
+  const { setTxFlow } = useContext(TxModalContext)
   const handleGrantPermission = async () => {
     if (isLoading) return
     setIsLoading(true)
@@ -64,6 +61,7 @@ export default function ActivateSavingSunny() {
       await publicClient.waitForTransactionReceipt({ hash: txHash.hash as `0x${string}` })
       queryClient.invalidateQueries({ queryKey: ['isSunnyAgentSettled', safeAddress] })
       setIsLoading(false)
+      setTxFlow(<SavingsSunny />)
     } catch (error) {
       console.error(error)
       setIsLoading(false)

@@ -1,4 +1,4 @@
-import { Box, Typography, Card, CardContent, Paper, Grid } from '@mui/material'
+import { Card, CardContent, Paper, Grid } from '@mui/material'
 import sharedCss from '@/components/tx/security/shared/styles.module.css'
 import React from 'react'
 
