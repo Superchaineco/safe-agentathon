@@ -15,6 +15,7 @@ import NotificationCenter from '@/components/notification-center/NotificationCen
 import { TxModalContext } from '@/components/tx-flow'
 import ActivateSavingSunny from '@/components/savings-sunny/ActivateSavingSunny'
 import SavingsSunny from '@/components/savings-sunny/SavingsSunny'
+import useIsSunnyAgentSettled from '@/hooks/super-chain/useIsSunnyAgentSettled'
 
 type HeaderProps = {
   onMenuToggle?: Dispatch<SetStateAction<boolean>>
@@ -26,7 +27,7 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
   const router = useRouter()
   const logoHref = '/#'
 
-  const [isAgentActive, setIsAgentActive] = useState(true)
+  const { data: isAgentActive } = useIsSunnyAgentSettled()
 
   const handleMenuToggle = () => {
     if (onMenuToggle) {
@@ -54,7 +55,7 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
         </Link>
       </div>
 
-      <div className={classnames(css.element, css.networkSelector)}>
+      <div className={classnames(css.element, css.networkSelector)} style={{ cursor: 'pointer' }}>
         <div onClick={handleOnClickAgent} className={classnames(css.element, css.inline)}>
           <SvgIcon component={SunnyIcon} inheritViewBox />
           <Typography fontWeight={600}>Agent:</Typography>

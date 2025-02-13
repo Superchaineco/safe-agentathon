@@ -17,10 +17,12 @@ import TxCard from '@/components/tx-flow/common/TxCard'
 import Stats from './Stats'
 import Actions from './Actions'
 import RecentActions from './RecentActions'
+import useIsSunnyAgentSettled from '@/hooks/super-chain/useIsSunnyAgentSettled'
 
 export default function SavingsSunny() {
   const [activeTab, setActiveTab] = useState(0)
-  const [toggle, setToggle] = useState('on')
+  const { data: isSunnyAgentSettled } = useIsSunnyAgentSettled()
+  const [toggle, setToggle] = useState(isSunnyAgentSettled ? 'on' : 'off')
   const handleToggle = (event: React.MouseEvent<HTMLElement>, newToggle: string) => {
     if (newToggle !== null) {
       setToggle(newToggle)

@@ -20,21 +20,53 @@ import React, { useState } from 'react'
 import css from './styles.module.css'
 import { TxLayoutHeader } from '@/components/tx-flow/common/TxLayout'
 import TxCard from '@/components/tx-flow/common/TxCard'
+import useSuperChainAccount from '@/hooks/super-chain/useSuperChainAccount'
+import { createEthersAdapter, useSafeSDK } from '@/hooks/coreSDK/safeCoreSDK'
+import { dispatchTxExecution } from '@/services/tx/tx-sender'
+import { useTxActions } from '@/components/tx/SignOrExecuteForm/hooks'
+import { assertWalletChain, getUncheckedSafeSDK } from '@/services/tx/tx-sender/sdk'
+import useWallet from '@/hooks/wallets/useWallet'
+import useSafeInfo from '@/hooks/useSafeInfo'
+import Safe from '@safe-global/protocol-kit'
+import { createWeb3 } from '@/hooks/wallets/web3'
+import { useQueryClient } from '@tanstack/react-query'
+
 export default function ActivateSavingSunny() {
   const [isLoading, setIsLoading] = useState(false)
-  const [toggle, setToggle] = useState('on')
+  const { getWritableSafeContract, publicClient } = useSuperChainAccount()
+  const queryClient = useQueryClient()
+  const wallet = useWallet()
+  const { safe, safeAddress } = useSafeInfo()
 
   const handleGrantPermission = async () => {
     if (isLoading) return
     setIsLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 10000))
-    console.log('grant permission')
-    setIsLoading(false)
-  }
+    try {
+      const safeContract = getWritableSafeContract()
+      console.debug(safeContract?.abi)
 
-  const handleToggle = (event: React.MouseEvent<HTMLElement>, newToggle: string) => {
-    if (newToggle !== null) {
-      setToggle(newToggle)
+      const _wallet = await assertWalletChain(wallet!, safe.chainId)
+      const provider = createWeb3(_wallet.provider)
+      const signer = await provider.getSigner()
+
+      const ethAdapter = await createEthersAdapter(provider)
+      // const tx = await safeContract?.write.enableModule(['0xde8f89B6d11fc6894C98A37458c0149787F051AE'])
+      const protocolKit = await Safe.create({
+        ethAdapter,
+        safeAddress: safe.address.value,
+      })
+      const tx = await protocolKit.createEnableModuleTx('0xde8f89B6d11fc6894C98A37458c0149787F051AE')
+      if (!tx) {
+        setIsLoading(false)
+        return
+      }
+      const txHash = await protocolKit.executeTransaction(tx)
+      await publicClient.waitForTransactionReceipt({ hash: txHash.hash as `0x${string}` })
+      queryClient.invalidateQueries({ queryKey: ['isSunnyAgentSettled', safeAddress] })
+      setIsLoading(false)
+    } catch (error) {
+      console.error(error)
+      setIsLoading(false)
     }
   }
 

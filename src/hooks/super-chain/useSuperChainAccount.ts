@@ -9,11 +9,13 @@ import { type Address, createPublicClient, createWalletClient, custom, getContra
 import usePimlico from '../usePimlico'
 import { sepolia, optimism } from 'viem/chains'
 import useWallet from '../wallets/useWallet'
+import useSafeInfo from '../useSafeInfo'
+import SafeABI from '@/features/superChain/abi/Safe.json'
 
 function useSuperChainAccount() {
   const { smartAccountClient } = usePimlico()
   const wallet = useWallet()
-
+  const { safeAddress } = useSafeInfo()
   const getReadOnlySuperChainSmartAccount = () => {
     const SuperChainAccountContractReadOnly = new Contract(
       SUPER_CHAIN_ACCOUNT_MODULE_ADDRESS,
@@ -53,6 +55,25 @@ function useSuperChainAccount() {
     })
     return SuperChainAccountContractWriteable
   }
+
+  const getWritableSafeContract = () => {
+    if (!wallet) return
+    const walletClient = createWalletClient({
+      chain: CHAIN_ID === sepolia.id.toString() ? sepolia : optimism,
+      transport: custom(wallet.provider),
+      account: wallet.address as Address,
+    })
+    const safeContract = getContract({
+      address: safeAddress as Address,
+      abi: SafeABI,
+      client: {
+        public: publicClient,
+        wallet: walletClient,
+      },
+    })
+    return safeContract
+  }
+
   const publicClient = createPublicClient({
     chain: CHAIN_ID === sepolia.id.toString() ? sepolia : optimism,
     transport: http(),
@@ -61,6 +82,7 @@ function useSuperChainAccount() {
     getReadOnlySuperChainSmartAccount,
     getSponsoredWriteableSuperChainSmartAccount,
     getWriteableSuperChainSmartAccount,
+    getWritableSafeContract,
     publicClient,
   }
 }
