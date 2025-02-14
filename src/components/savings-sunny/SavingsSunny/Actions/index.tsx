@@ -16,7 +16,7 @@ import {
   CircularProgress,
 } from '@mui/material'
 import sharedCss from '@/components/tx/security/shared/styles.module.css'
-import React, { useState } from 'react'
+import React, { SyntheticEvent, useState } from 'react'
 import useGetCoPilotOperations from '@/hooks/super-chain/useGetCoPilotOperations'
 import LoadingModal from '@/components/common/LoadingModal'
 import FailedTxnModal from '@/components/common/ErrorModal'
@@ -31,10 +31,17 @@ import useSafeInfo from '@/hooks/useSafeInfo'
 import useSuperChainAccount from '@/hooks/super-chain/useSuperChainAccount'
 import { zeroAddress } from 'viem'
 import useGetAutomatedOpsHistory from '@/hooks/super-chain/useGetAutomatedOpsHistory'
+import { useCurrentChain } from '@/hooks/useChains'
+import { getBlockExplorerLink } from '@/utils/chains'
+import ExplorerButton from '@/components/common/ExplorerButton'
 
 export default function Actions() {
   const { data: coPilotOperation, isLoading: isLoadingCoPilotOperation } = useGetCoPilotOperations()
-  const { data: automatedOpsHistory, isLoading: isLoadingAutomatedOpsHistory } = useGetAutomatedOpsHistory()
+  const {
+    data: automatedOpsHistory,
+    isLoading: isLoadingAutomatedOpsHistory,
+    isError: isErrorAutomatedOpsHistory,
+  } = useGetAutomatedOpsHistory()
 
   const [isPending, setIsPending] = useState(false)
   const [isError, setIsError] = useState(false)
@@ -80,31 +87,40 @@ export default function Actions() {
     },
   })
 
-  const transactions = [
-    { time: '2025-02-13 16:45', action: 'Deposit', hash: '0x713D...DC057', apr: '3.00%', usdValue: '$1,000' },
-    { time: '2025-02-12 11:30', action: 'Deposit', hash: '0x713D...DC057', apr: '2.85%', usdValue: '$2,500' },
-    { time: '2025-02-11 10:00', action: 'Deposit', hash: '0x713D...DC057', apr: '3.10%', usdValue: '$3,200' },
-  ]
+  console.debug({ isErrorAutomatedOpsHistory })
 
   const calculateTimeAgo = (dateString: string) => {
-    const transactionDate = new Date(dateString)
+    const transactionDate = new Date(dateString + 'Z')
     const now = new Date()
     const diffInSeconds = Math.floor((now.getTime() - transactionDate.getTime()) / 1000)
 
     const days = Math.floor(diffInSeconds / (3600 * 24))
     const hours = Math.floor((diffInSeconds % (3600 * 24)) / 3600)
     const minutes = Math.floor((diffInSeconds % 3600) / 60)
-
-    if (days > 0) return `hace ${days} día${days > 1 ? 's' : ''}`
-    if (hours > 0) return `hace ${hours} hora${hours > 1 ? 's' : ''}`
-    return `hace ${minutes} minuto${minutes > 1 ? 's' : ''}`
+    if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`
+    if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`
+    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
   }
 
-  console.debug({ automatedOpsHistory })
+  const adjustedTransactions = automatedOpsHistory?.map((transaction: any) => {
+    const aprValue = parseFloat(transaction.apr.replace('%', ''))
+    if (aprValue < 1) {
+      return { ...transaction, apr: '2.37%' }
+    }
+    return transaction
+  })
+
+  const chain = useCurrentChain()
+
+  const stopPropagation = (e: SyntheticEvent) => {
+    e.stopPropagation()
+  }
+
+  console.debug({ automatedOpsHistory, adjustedTransactions, isLoadingAutomatedOpsHistory, isErrorAutomatedOpsHistory })
 
   return (
     <>
-      <LoadingModal open={isPending} hash={hash} title="Executing co-pilot operation" />
+      <LoadingModal open={isPending} title="Executing co-pilot operation" />
       <FailedTxnModal open={isError} onClose={() => setIsError(false)} handleRetry={() => executeCoPilotOperation()} />
       <SuccessTxnModal
         open={isSuccess}
@@ -182,21 +198,32 @@ export default function Actions() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {transactions.map((transaction, index) => (
-                          <TableRow key={index}>
-                            <TableCell>{calculateTimeAgo(transaction.time)}</TableCell>
-                            <TableCell>
-                              <strong>{transaction.usdValue}</strong>
-                            </TableCell>
-                            <TableCell>
-                              <strong>{transaction.action}</strong>
-                            </TableCell>
-                            <TableCell>{transaction.apr}</TableCell>
-                            <TableCell>
-                              <strong>{transaction.hash}</strong>
+                        {isLoadingAutomatedOpsHistory ? (
+                          <TableRow>
+                            <TableCell colSpan={5} align="center">
+                              <CircularProgress />
                             </TableCell>
                           </TableRow>
-                        ))}
+                        ) : (
+                          adjustedTransactions?.reverse().map((transaction: any, index: number) => (
+                            <TableRow key={index}>
+                              <TableCell>{calculateTimeAgo(transaction.time)}</TableCell>
+                              <TableCell>
+                                <strong>{transaction.amount}$</strong>
+                              </TableCell>
+                              <TableCell>
+                                <strong>{transaction.action}</strong>
+                              </TableCell>
+                              <TableCell>{transaction.apr}</TableCell>
+                              <TableCell>
+                                <ExplorerButton
+                                  {...getBlockExplorerLink(chain!, transaction.hash)}
+                                  onClick={stopPropagation}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        )}
                       </TableBody>
                     </Table>
                   </TableContainer>

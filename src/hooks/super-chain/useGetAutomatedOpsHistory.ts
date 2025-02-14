@@ -16,6 +16,7 @@ function useGetAutomatedOpsHistory() {
       return response.data
     },
     enabled: !!safeAddress,
+    refetchInterval: 10000,
   })
 }
 
