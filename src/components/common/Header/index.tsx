@@ -38,7 +38,7 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
   }
 
   const handleOnClickAgent = () => {
-    setTxFlow(isAgentActive ? <SavingsSunny /> : <ActivateSavingSunny />)
+    setTxFlow(isAgentActive ? <SavingsSunny /> : <ActivateSavingSunny />, () => {}, false)
   }
 
   return (

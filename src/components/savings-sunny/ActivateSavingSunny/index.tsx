@@ -56,7 +56,7 @@ export default function ActivateSavingSunny() {
         return
       }
       const txHash = await protocolKit.executeTransaction(tx)
-      await axios.post(`${SUNNY_AGENT_BACKEND}/api/v1/super-accounts/register`, {
+      await axios.post(`${SUNNY_AGENT_BACKEND}/register`, {
         address: safeAddress,
       })
       await publicClient.waitForTransactionReceipt({ hash: txHash.hash as `0x${string}` })
