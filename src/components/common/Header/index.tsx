@@ -29,6 +29,8 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
 
   const { data: isAgentActive, isLoading: isLoadingIsAgentActive } = useIsSunnyAgentSettled()
 
+  console.debug({ isAgentActive, isLoadingIsAgentActive })
+
   const handleMenuToggle = () => {
     if (onMenuToggle) {
       onMenuToggle((isOpen) => !isOpen)
@@ -36,6 +38,8 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
       router.push(logoHref)
     }
   }
+
+  const disabled = isLoadingIsAgentActive || !isAgentActive
 
   const handleOnClickAgent = () => {
     setTxFlow(isAgentActive ? <SavingsSunny /> : <ActivateSavingSunny />, () => {}, false)
@@ -55,12 +59,20 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
         </Link>
       </div>
 
-      <div className={classnames(css.element, css.networkSelector)} style={{ cursor: 'pointer' }}>
-        <div
-          onClick={isLoadingIsAgentActive ? () => {} : handleOnClickAgent}
-          className={classnames(css.element, css.inline)}
-        >
-          <SvgIcon component={SunnyIcon} inheritViewBox />
+      <div
+        className={classnames(css.element, css.networkSelector)}
+        style={{
+          filter: disabled ? 'grayscale(100%)' : 'none',
+          cursor: disabled ? 'none' : 'pointer',
+        }}
+      >
+        <div onClick={disabled ? () => {} : handleOnClickAgent} className={classnames(css.element, css.inline)}>
+          <SvgIcon
+            className={classnames({ [css.animated]: disabled })}
+            component={SunnyIcon}
+            inheritViewBox
+            sx={{ color: 'inherit' }}
+          />
           <Typography fontWeight={600}>Agent:</Typography>
           <Chip
             label={isAgentActive ? 'On' : 'Off'}
