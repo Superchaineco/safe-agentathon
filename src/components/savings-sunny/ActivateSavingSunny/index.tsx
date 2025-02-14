@@ -62,7 +62,7 @@ export default function ActivateSavingSunny() {
       await publicClient.waitForTransactionReceipt({ hash: txHash.hash as `0x${string}` })
       queryClient.invalidateQueries({ queryKey: ['isSunnyAgentSettled', safeAddress] })
       setIsLoading(false)
-      setTxFlow(<SavingsSunny />)
+      setTxFlow(<SavingsSunny />, () => {}, false)
     } catch (error) {
       console.error(error)
       setIsLoading(false)
