@@ -12,26 +12,26 @@ type Action = {
 const mocks: Action[] = [
   {
     apy: 2,
-    tokenInIcon: 'http://localhost:3000/tokens/0x0000000000000000000000000000000000000000.svg',
-    tokenOutIcon: 'http://localhost:3000/tokens/0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85.svg',
+    tokenInIcon: 'https://safe-agentathon.superchain.eco/tokens/0x0000000000000000000000000000000000000000.svg',
+    tokenOutIcon: 'https://safe-agentathon.superchain.eco/tokens/0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85.svg',
     actionType: 'deposit',
   },
   {
     apy: 8,
-    tokenInIcon: 'http://localhost:3000/tokens/0x0000000000000000000000000000000000000000.svg',
-    tokenOutIcon: 'http://localhost:3000/tokens/0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85.svg',
+    tokenInIcon: 'https://safe-agentathon.superchain.eco/tokens/0x0000000000000000000000000000000000000000.svg',
+    tokenOutIcon: 'https://safe-agentathon.superchain.eco/tokens/0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85.svg',
     actionType: 'withdraw',
   },
   {
     apy: 10,
-    tokenInIcon: 'http://localhost:3000/tokens/0x0000000000000000000000000000000000000000.svg',
-    tokenOutIcon: 'http://localhost:3000/tokens/0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85.svg',
+    tokenInIcon: 'https://safe-agentathon.superchain.eco/tokens/0x0000000000000000000000000000000000000000.svg',
+    tokenOutIcon: 'https://safe-agentathon.superchain.eco/tokens/0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85.svg',
     actionType: 'deposit',
   },
   {
     apy: 30,
-    tokenInIcon: 'http://localhost:3000/tokens/0x0000000000000000000000000000000000000000.svg',
-    tokenOutIcon: 'http://localhost:3000/tokens/0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85.svg',
+    tokenInIcon: 'https://safe-agentathon.superchain.eco/tokens/0x0000000000000000000000000000000000000000.svg',
+    tokenOutIcon: 'https://safe-agentathon.superchain.eco/tokens/0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85.svg',
     actionType: 'withdraw',
   },
 ]
