@@ -39,3 +39,4 @@ export const ERC4337_MODULE_ADDRESS = environmentConfig.ERC4337_MODULE_ADDRESS a
 export const JSON_RPC_PROVIDER = environmentConfig.JSON_RPC_PROVIDER
 export const CHAIN_ID = environmentConfig.CHAIN_ID
 export const SUBGRAPH_URL = environmentConfig.SUBGRAPH_URL
+export const SUNNY_AGENT_BACKEND = 'https://agent-duckai-production.up.railway.app'

@@ -28,6 +28,8 @@ import { createWeb3 } from '@/hooks/wallets/web3'
 import { useQueryClient } from '@tanstack/react-query'
 import { TxModalContext } from '@/components/tx-flow'
 import SavingsSunny from '../SavingsSunny'
+import axios from 'axios'
+import { SUNNY_AGENT_BACKEND } from '@/features/superChain/constants'
 export default function ActivateSavingSunny() {
   const [isLoading, setIsLoading] = useState(false)
   const { getWritableSafeContract, publicClient } = useSuperChainAccount()
@@ -39,12 +41,8 @@ export default function ActivateSavingSunny() {
     if (isLoading) return
     setIsLoading(true)
     try {
-      const safeContract = getWritableSafeContract()
-      console.debug(safeContract?.abi)
-
       const _wallet = await assertWalletChain(wallet!, safe.chainId)
       const provider = createWeb3(_wallet.provider)
-      const signer = await provider.getSigner()
 
       const ethAdapter = await createEthersAdapter(provider)
       // const tx = await safeContract?.write.enableModule(['0xde8f89B6d11fc6894C98A37458c0149787F051AE'])
@@ -58,6 +56,9 @@ export default function ActivateSavingSunny() {
         return
       }
       const txHash = await protocolKit.executeTransaction(tx)
+      await axios.post(`${SUNNY_AGENT_BACKEND}/api/v1/super-accounts/register`, {
+        address: safeAddress,
+      })
       await publicClient.waitForTransactionReceipt({ hash: txHash.hash as `0x${string}` })
       queryClient.invalidateQueries({ queryKey: ['isSunnyAgentSettled', safeAddress] })
       setIsLoading(false)

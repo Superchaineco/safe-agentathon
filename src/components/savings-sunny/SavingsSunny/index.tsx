@@ -12,11 +12,6 @@ export default function SavingsSunny() {
   const [activeTab, setActiveTab] = useState(0)
   const { data: isSunnyAgentSettled } = useIsSunnyAgentSettled()
   const [toggle, setToggle] = useState(isSunnyAgentSettled ? 'on' : 'off')
-  const handleToggle = (event: React.MouseEvent<HTMLElement>, newToggle: string) => {
-    if (newToggle !== null) {
-      setToggle(newToggle)
-    }
-  }
 
   return (
     <Container className={css.container}>

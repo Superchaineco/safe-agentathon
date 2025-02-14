@@ -27,7 +27,7 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
   const router = useRouter()
   const logoHref = '/#'
 
-  const { data: isAgentActive } = useIsSunnyAgentSettled()
+  const { data: isAgentActive, isLoading: isLoadingIsAgentActive } = useIsSunnyAgentSettled()
 
   const handleMenuToggle = () => {
     if (onMenuToggle) {
@@ -56,7 +56,10 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
       </div>
 
       <div className={classnames(css.element, css.networkSelector)} style={{ cursor: 'pointer' }}>
-        <div onClick={handleOnClickAgent} className={classnames(css.element, css.inline)}>
+        <div
+          onClick={isLoadingIsAgentActive ? () => {} : handleOnClickAgent}
+          className={classnames(css.element, css.inline)}
+        >
           <SvgIcon component={SunnyIcon} inheritViewBox />
           <Typography fontWeight={600}>Agent:</Typography>
           <Chip

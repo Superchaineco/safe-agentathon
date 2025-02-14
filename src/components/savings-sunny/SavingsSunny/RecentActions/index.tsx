@@ -11,13 +11,13 @@ type Action = {
 
 const mocks: Action[] = [
   {
-    apy: 10,
+    apy: 2,
     tokenInIcon: 'http://localhost:3000/tokens/0x0000000000000000000000000000000000000000.svg',
     tokenOutIcon: 'http://localhost:3000/tokens/0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85.svg',
     actionType: 'deposit',
   },
   {
-    apy: 10,
+    apy: 8,
     tokenInIcon: 'http://localhost:3000/tokens/0x0000000000000000000000000000000000000000.svg',
     tokenOutIcon: 'http://localhost:3000/tokens/0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85.svg',
     actionType: 'withdraw',
@@ -29,7 +29,7 @@ const mocks: Action[] = [
     actionType: 'deposit',
   },
   {
-    apy: 10,
+    apy: 30,
     tokenInIcon: 'http://localhost:3000/tokens/0x0000000000000000000000000000000000000000.svg',
     tokenOutIcon: 'http://localhost:3000/tokens/0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85.svg',
     actionType: 'withdraw',
