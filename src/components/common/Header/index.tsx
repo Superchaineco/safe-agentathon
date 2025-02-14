@@ -42,7 +42,7 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
   const disabled = isLoadingIsAgentActive || isAgentActive === undefined
 
   const handleOnClickAgent = () => {
-    setTxFlow(isAgentActive ? <SavingsSunny /> : <ActivateSavingSunny />, () => { }, false)
+    setTxFlow(isAgentActive ? <SavingsSunny /> : <ActivateSavingSunny />, () => {}, false)
   }
 
   return (
@@ -66,7 +66,7 @@ const Header = ({ onMenuToggle }: HeaderProps): ReactElement => {
           cursor: disabled ? 'none' : 'pointer',
         }}
       >
-        <div onClick={disabled ? () => { } : handleOnClickAgent} className={classnames(css.element, css.inline)}>
+        <div onClick={disabled ? () => {} : handleOnClickAgent} className={classnames(css.element, css.inline)}>
           <SvgIcon
             className={classnames({ [css.animated]: disabled })}
             component={SunnyIcon}
